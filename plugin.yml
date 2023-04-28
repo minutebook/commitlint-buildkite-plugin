@@ -1,0 +1,11 @@
+name: Commitlint
+description: Runs commitlint and validate commit conventions for your repository
+author: https://github.com/minutebook
+requirements: []
+configuration:
+  properties:
+    github_token:
+      type: string
+    node_version:
+      type: string
+  additionalProperties: false

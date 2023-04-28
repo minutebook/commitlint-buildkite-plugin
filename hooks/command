@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+debug() {
+    echo >&2 "$*"
+}
+
+main() {
+    if [[ -z "${BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN}" ]]; then
+        debug "Missing GitHub access token"
+        exit 1
+    fi
+
+    if [[ -z "${BUILDKITE_PULL_REQUEST_BASE_BRANCH}" ]]; then
+        debug "No Pull Request detected"
+        debug "Skipping Commitlint plugin as it is only intended to run against Pull Request builds"
+        exit 0
+    fi
+
+    NODE_VERSION=${BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION:-"20"}
+
+    ###
+    # Get commit count & run commitlint
+    ###
+    docker run \
+        -e BUILDKITE_PULL_REQUEST_REPO \
+        -e BUILDKITE_PULL_REQUEST \
+        -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN \
+        --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" \
+        --workdir=/workdir \
+        --volume="$(pwd)":/workdir \
+        --volume="$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin":/plugin \
+        -it \
+        --rm \
+        node:$NODE_VERSION \
+        bash -c "/plugin/hooks/scripts/commitlint"
+}
+
+main "$@"
