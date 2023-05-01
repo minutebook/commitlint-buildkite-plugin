@@ -32,7 +32,7 @@ main() {
         --volume="$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin":/plugin \
         -it \
         --rm \
-        node:$NODE_VERSION \
+        node:"$NODE_VERSION" \
         bash -c "/plugin/hooks/scripts/commitlint"
 }
 
