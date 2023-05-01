@@ -7,7 +7,7 @@ node_version="20"
 setup() {
   export BUILDKITE_JOB_ID=0
   export BUILDKITE_PULL_REQUEST_BASE_BRANCH="main"
-  export BUILDKITE_PULL_REQUEST_REPO="git://github.com/owner/repo.git"
+  export BUIDLKITE_REPO="git://github.com/owner/repo.git"
   export BUILDKITE_PULL_REQUEST="1023"
   export BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN="pat_token1931=e18e128912012e9129"
   export BUILDKITE_PLUGINS_PATH="/var/lib/buildkite-agent/plugins"
@@ -34,7 +34,7 @@ setup() {
 
 @test "Command succeeds" {
   stub docker \
-    "run -e BUILDKITE_PULL_REQUEST_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$node_version bash -c "/plugin/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$node_version bash -c "/plugin/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -48,7 +48,7 @@ setup() {
   export BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION=19
 
   stub docker \
-    "run -e BUILDKITE_PULL_REQUEST_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION bash -c '/plugin/hooks/scripts/commitlint' : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION bash -c '/plugin/hooks/scripts/commitlint' : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 

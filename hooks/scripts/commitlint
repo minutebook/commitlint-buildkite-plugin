@@ -7,9 +7,9 @@ debug() {
 
 apt-get -qq update && apt-get -qq -y --no-install-recommends install jq
 
-OWNER=$(echo "${BUILDKITE_PULL_REQUEST_REPO#git://github.com/}" | cut -d '/' -f1)
+OWNER=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f1)
 debug "Repository owner: $OWNER"
-REPO=$(echo "${BUILDKITE_PULL_REQUEST_REPO#git://github.com/}" | cut -d '/' -f2 | cut -d '.' -f1)
+REPO=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f2 | cut -d '.' -f1)
 debug "Repository name: $REPO"
 
 debug "Pull request number: $BUILDKITE_PULL_REQUEST"

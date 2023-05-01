@@ -1,8 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+hooks=$(dirname "${BASH_SOURCE[0]}")
+
 debug() {
-    echo >&2 "$*"
+    echo >&2 "[DEBUG] : $*"
 }
 
 main() {
@@ -19,21 +21,24 @@ main() {
 
     NODE_VERSION=${BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION:-"20"}
 
+    debug "Plugin command absolute directory name: $hooks"
+    debug "Current directory: $(pwd)"
+
     ###
     # Get commit count & run commitlint
     ###
     docker run \
-        -e BUILDKITE_PULL_REQUEST_REPO \
+        -e BUILDKITE_REPO \
         -e BUILDKITE_PULL_REQUEST \
         -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN \
         --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" \
         --workdir=/workdir \
         --volume="$(pwd)":/workdir \
-        --volume="$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin":/plugin \
+        --volume="$hooks":/hooks \
         -it \
         --rm \
         node:"$NODE_VERSION" \
-        bash -c "/plugin/hooks/scripts/commitlint"
+        /bin/bash -c "/hooks/scripts/commitlint"
 }
 
 main "$@"
