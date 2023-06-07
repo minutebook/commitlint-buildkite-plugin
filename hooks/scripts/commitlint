@@ -31,6 +31,6 @@ test -f "package.json" && npm install
 git config --global --add safe.directory /workdir
 
 echo
-debug "Linting commit range: HEAD~$count..HEAD"
+debug "Linting commit from: HEAD~$count"
 debug "========================================"
-npx -y commitlint --from HEAD~"$count" --to HEAD
+npx -y commitlint --from HEAD~"$count"
