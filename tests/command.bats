@@ -8,7 +8,7 @@ mock_hooks_path="$PWD/hooks"
 setup() {
   export BUILDKITE_JOB_ID=0
   export BUILDKITE_PULL_REQUEST_BASE_BRANCH="main"
-  export BUILDKITE_REPO="git://github.com/owner/repo.git"
+  export BUILDKITE_REPO="git@github.com:owner/repo.git"
   export BUILDKITE_PULL_REQUEST="1023"
   export BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN="pat_token1931=e18e128912012e9129"
   export BUILDKITE_PLUGINS_PATH="/var/lib/buildkite-agent/plugins"
