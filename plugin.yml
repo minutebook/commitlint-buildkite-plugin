@@ -1,7 +1,9 @@
 name: Commitlint
 description: Runs commitlint and validate commit conventions for your repository
 author: https://github.com/minutebook
-requirements: []
+requirements:
+  - bash
+  - docker
 configuration:
   properties:
     github_token:
