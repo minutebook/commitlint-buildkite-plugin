@@ -24,7 +24,7 @@ commits=$(curl -Ls \
 
 debug "Commits: $commits"
 
-count=$(echo $commits | jq -r '. | length')
+count=$(echo "$commits" | jq -r '. | length')
 debug "Commit count: $count"
 
 test -f "package.json" && npm install
