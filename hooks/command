@@ -37,7 +37,7 @@ main() {
         --volume="$hooks":/hooks \
         -it \
         --rm \
-        node:"$NODE_VERSION" \
+        public.ecr.aws./docker/library/node:"$NODE_VERSION" \
         /bin/bash -c "/hooks/scripts/commitlint"
 }
 
