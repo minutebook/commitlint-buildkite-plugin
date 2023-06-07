@@ -35,7 +35,7 @@ setup() {
 
 @test "Command succeeds" {
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws./docker/library/node:$node_version /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$node_version /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -49,7 +49,7 @@ setup() {
   export BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION=19
 
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws./docker/library/node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
