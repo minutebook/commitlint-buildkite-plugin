@@ -11,3 +11,10 @@ steps:
     plugins:
       - shellcheck#v1.3.0:
           files: hooks/**/*
+
+  - label: ":github: Release"
+    command: "npm i; npx -y semantic-release"
+    branches: "main"
+    plugins:
+      - docker#v5.7.0:
+          image: "node:20"
