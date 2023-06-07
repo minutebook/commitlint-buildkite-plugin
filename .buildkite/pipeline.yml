@@ -12,6 +12,8 @@ steps:
       - shellcheck#v1.3.0:
           files: hooks/**/*
 
+  - wait
+
   - label: ":github: Release"
     command: "npx -y semantic-release"
     branches: "main"
