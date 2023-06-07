@@ -34,7 +34,7 @@ main() {
         -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN \
         --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" \
         --workdir=/workdir \
-        --volume="$git_mirror_path":"$git_mirror_path" \
+        --volume="$git_mirror_path:$git_mirror_path" \
         --volume="$(pwd)":/workdir \
         --volume="$hooks":/hooks \
         -it \
