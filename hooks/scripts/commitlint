@@ -7,26 +7,30 @@ debug() {
 
 apt-get -qq update && apt-get -qq -y --no-install-recommends install jq
 
-OWNER=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f1)
-debug "Repository owner: $OWNER"
-REPO=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f2 | cut -d '.' -f1)
-debug "Repository name: $REPO"
+owner=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f1)
+debug "Repository owner: $owner"
+repo=$(echo "${BUILDKITE_REPO#git://github.com/}" | cut -d '/' -f2 | cut -d '.' -f1)
+debug "Repository name: $repo"
 
 debug "Pull request number: $BUILDKITE_PULL_REQUEST"
 
-debug "Pull request commit list: https://api.github.com/repos/$OWNER/$REPO/pulls/$BUILDKITE_PULL_REQUEST/commits"
+debug "Pull request commit list: https://api.github.com/repos/$owner/$repo/pulls/$BUILDKITE_PULL_REQUEST/commits"
 
 commits=$(curl -Ls \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer $BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
-    "https://api.github.com/repos/$OWNER/$REPO/pulls/$BUILDKITE_PULL_REQUEST/commits" |
-    jq -r '. | length')
+    "https://api.github.com/repos/$owner/$repo/pulls/$BUILDKITE_PULL_REQUEST/commits")
+
+debug "Commits: $commits"
+
+count=$(echo $commits | jq -r '. | length')
+debug "Commit count: $count"
 
 test -f "package.json" && npm install
 git config --global --add safe.directory /workdir
 
 echo
-debug "Linting commit range: HEAD~$commits..HEAD"
+debug "Linting commit range: HEAD~$count..HEAD"
 debug "========================================"
-npx -y commitlint --from HEAD~"$commits" --to HEAD
+npx -y commitlint --from HEAD~"$count" --to HEAD

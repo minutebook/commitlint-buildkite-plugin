@@ -3,11 +3,12 @@
 load "$BATS_PLUGIN_PATH/load.bash"
 
 node_version="20"
+mock_hooks_path="$PWD/hooks"
 
 setup() {
   export BUILDKITE_JOB_ID=0
   export BUILDKITE_PULL_REQUEST_BASE_BRANCH="main"
-  export BUIDLKITE_REPO="git://github.com/owner/repo.git"
+  export BUILDKITE_REPO="git://github.com/owner/repo.git"
   export BUILDKITE_PULL_REQUEST="1023"
   export BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN="pat_token1931=e18e128912012e9129"
   export BUILDKITE_PLUGINS_PATH="/var/lib/buildkite-agent/plugins"
@@ -34,7 +35,7 @@ setup() {
 
 @test "Command succeeds" {
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$node_version bash -c "/plugin/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm node:$node_version /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -48,7 +49,7 @@ setup() {
   export BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION=19
 
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$BUILDKITE_PLUGINS_PATH/commitlint-buildkite-plugin:/plugin -it --rm node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION bash -c '/plugin/hooks/scripts/commitlint' : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -65,9 +66,10 @@ setup() {
     "-qq update : echo Update apt-get" \
     "-qq -y --no-install-recommends install jq : echo Install jq"
   stub curl \
-    "-Ls -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer $BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/owner/repo/pulls/$BUILDKITE_PULL_REQUEST/commits : echo Called Github API"
-  stub jq \
-    "-r '. | length' : echo 2"
+    "-Ls -H 'Accept: application/vnd.github+json' \
+      -H 'Authorization: Bearer $BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN' \
+      -H 'X-GitHub-Api-Version: 2022-11-28' \
+      https://api.github.com/repos/owner/repo/pulls/$BUILDKITE_PULL_REQUEST/commits : echo '[{\"commit\":{\"message\":\"chore: sample\"}},{\"commit\":{\"message\":\"fix: a fix\"}}]'"
   stub git \
     "config --global --add safe.directory /workdir : echo Configure safe directory"
   stub npx \
@@ -77,7 +79,6 @@ setup() {
 
   unstub apt-get
   unstub curl
-  unstub jq
   unstub git
   unstub npx
 
