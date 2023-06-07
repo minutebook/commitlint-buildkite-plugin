@@ -4,6 +4,7 @@ load "$BATS_PLUGIN_PATH/load.bash"
 
 node_version="20"
 mock_hooks_path="$PWD/hooks"
+git_mirror_path="/var/lib/buildkite-agent/git-mirrors"
 
 setup() {
   export BUILDKITE_JOB_ID=0
@@ -35,7 +36,7 @@ setup() {
 
 @test "Command succeeds" {
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$node_version /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume="/var/lib/buildkite-agent/git-mirrors:/var/lib/buildkite-agent/git-mirrors" --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$node_version /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -49,7 +50,7 @@ setup() {
   export BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION=19
 
   stub docker \
-    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
+    "run -e BUILDKITE_REPO -e BUILDKITE_PULL_REQUEST -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" --workdir=/workdir --volume="/var/lib/buildkite-agent/git-mirrors:/var/lib/buildkite-agent/git-mirrors" --volume=$(pwd):/workdir --volume=$mock_hooks_path:/hooks -it --rm public.ecr.aws/docker/library/node:$BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION /bin/bash -c "/hooks/scripts/commitlint" : echo Ran commitlint in docker"
 
   run "$PWD/hooks/command"
 
@@ -73,7 +74,7 @@ setup() {
   stub git \
     "config --global --add safe.directory /workdir : echo Configure safe directory"
   stub npx \
-    "-y commitlint --from HEAD~2 --to HEAD : echo Run commitlint"
+    "-y commitlint --from HEAD~2 : echo Run commitlint"
 
   run "$PWD/hooks/scripts/commitlint"
 
