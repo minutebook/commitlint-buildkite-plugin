@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+git_mirror_path="/var/lib/buildkite-agent/git-mirrors"
 hooks=$(dirname "${BASH_SOURCE[0]}")
 
 debug() {
@@ -33,6 +34,7 @@ main() {
         -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN \
         --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" \
         --workdir=/workdir \
+        --volume="$git_mirror_path":"$git_mirror_path" \
         --volume="$(pwd)":/workdir \
         --volume="$hooks":/hooks \
         -it \
