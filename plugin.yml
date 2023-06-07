@@ -11,3 +11,5 @@ configuration:
     node_version:
       type: string
   additionalProperties: false
+  required:
+    - github_token
