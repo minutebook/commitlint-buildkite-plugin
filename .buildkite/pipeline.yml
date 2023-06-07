@@ -13,7 +13,7 @@ steps:
           files: hooks/**/*
 
   - label: ":github: Release"
-    command: "npm i; npx -y semantic-release"
+    command: "npx -y semantic-release"
     branches: "main"
     plugins:
       - docker#v5.7.0:
