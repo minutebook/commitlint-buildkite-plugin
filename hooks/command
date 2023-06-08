@@ -8,22 +8,26 @@ debug() {
     [ -z ${BUILDKITE_PLUGIN_COMMITLINT_DEBUG+x} ] || echo "[DEBUG] : $*" >&2
 }
 
+info() {
+    echo "[INFO] : $*"
+}
+
 main() {
     if [[ -z "${BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN}" ]]; then
-        debug "Missing GitHub access token"
+        info "Missing GitHub access token"
         exit 1
     fi
 
     if [[ -z "${BUILDKITE_PULL_REQUEST_BASE_BRANCH}" ]]; then
-        debug "No Pull Request detected"
-        debug "Skipping Commitlint plugin as it is only intended to run against Pull Request builds"
+        info "No Pull Request detected"
+        info "Skipping Commitlint plugin as it is only intended to run against Pull Request builds"
         exit 0
     fi
 
     NODE_VERSION=${BUILDKITE_PLUGIN_COMMITLINT_NODE_VERSION:-"20"}
 
-    debug "Plugin command absolute directory name: $hooks"
-    debug "Current directory: $(pwd)"
+    info "Plugin command absolute directory name: $hooks"
+    info "Current directory: $(pwd)"
 
     ###
     # Get commit count & run commitlint
@@ -32,6 +36,7 @@ main() {
         -e BUILDKITE_REPO \
         -e BUILDKITE_PULL_REQUEST \
         -e BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN \
+        -e BUILDKITE_PLUGIN_COMMITLINT_DEBUG \
         --label "com.buildkite.job-id=${BUILDKITE_JOB_ID}" \
         --workdir=/workdir \
         --volume="$git_mirror_path:$git_mirror_path" \
