@@ -29,7 +29,7 @@ commits=$(curl -Ls \
 
 error=$(echo "$commits" | jq -r 'type')
 if [ $error != "array" ]; then
-    fail "Unexpected payload: $error"
+    fail "Unexpected payload: $commits"
 fi
 
 debug "Commits: $commits"
