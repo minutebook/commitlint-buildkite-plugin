@@ -28,7 +28,7 @@ commits=$(curl -Ls \
     "https://api.github.com/repos/$owner/$repo/pulls/$BUILDKITE_PULL_REQUEST/commits") || exit $?
 
 error=$(echo "$commits" | jq -r 'type')
-if [ $error != "array" ]; then
+if [ "$error" != "array" ]; then
     fail "Unexpected payload: $commits"
 fi
 
