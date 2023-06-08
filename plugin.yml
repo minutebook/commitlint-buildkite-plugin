@@ -10,6 +10,8 @@ configuration:
       type: string
     node_version:
       type: string
+    debug:
+      type: boolean
   additionalProperties: false
   required:
     - github_token

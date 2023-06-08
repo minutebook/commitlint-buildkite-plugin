@@ -2,7 +2,7 @@
 set -euo pipefail
 
 debug() {
-    echo >&2 "[DEBUG] : $*"
+    [ -z ${BUILDKITE_PLUGIN_COMMITLINT_DEBUG+x} ] || echo "[DEBUG] : $*" >&2
 }
 
 apt-get -qq update && apt-get -qq -y --no-install-recommends install jq

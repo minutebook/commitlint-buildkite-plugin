@@ -2,21 +2,28 @@
 
 Runs commitlint and validate commit conventions for your repository.
 
-It is expected to only __run__ in builds triggered by pull requests as it will make an api call to Github to calculate the amount of commits included in the change set. With that `commits` number, it will call `commitlint` with:
+It is expected to only __run__ in builds triggered by pull requests as it will make an api call to Github to calculate the amount of commits included in the change set. With that `commits` number, it will call `commitlint` with the following:
 
 ```
-npx -y commitlint --from HEAD~$commits --to HEAD
+npx -y commitlint --from HEAD~$commits
 ```
 
-which will lint __all__ commits in the proposed PR
+which will lint __all__ commits in the targeted PR
 
 ## Example
 
 Add the following to your `pipeline.yml`:
 
 ```yml
+# Using Buildkite with AWS Secrets Manager
 steps:
-  - plugins:
+  - name: ":git: Commitlint"
+    plugins:
+      - seek-oss/aws-sm#v2.3.1:
+          env:
+            BUILDKITE_PLUGIN_COMMITLINT_GITHUB_TOKEN:
+              secret-id: "secrets-manager-secret"
+              json-key: ".GITHUB_TOKEN"
       - minutebook/commitlint#v1.0.0: ~
 ```
 
