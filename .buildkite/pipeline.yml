@@ -14,19 +14,19 @@ steps:
 
   - wait
 
-  # - label: ":github: Release"
-  #   command: "npx -y semantic-release"
-  #   branches: "main"
-  #   plugins:
-  #     - seek-oss/aws-sm#v2.3.1:
-  #         env:
-  #           GITHUB_TOKEN:
-  #             secret-id: "mb-buildkite-default-secret"
-  #             json-key: ".GITHUB_TOKEN"
-  #     - docker#v5.7.0:
-  #         image: "node:20"
-  #         environment:
-  #           - "GITHUB_TOKEN"
-  #           - "CI"
-  #         volumes:
-  #           - "$HOME/.ssh/known_hosts:/root/.ssh/known_hosts"
+  - label: ":github: Release"
+    command: "npx -y semantic-release"
+    branches: "main"
+    plugins:
+      - seek-oss/aws-sm#v2.3.1:
+          env:
+            GITHUB_TOKEN:
+              secret-id: "mb-buildkite-default-secret"
+              json-key: ".SEMANTIC_RELEASE_GITHUB_TOKEN"
+      - docker#v5.7.0:
+          image: "node:20"
+          environment:
+            - "GITHUB_TOKEN"
+            - "CI"
+          volumes:
+            - "$HOME/.ssh/known_hosts:/root/.ssh/known_hosts"
